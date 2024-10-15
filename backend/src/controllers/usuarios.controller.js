@@ -179,7 +179,6 @@ export const actualizarUsuario = async (req, res) => {
 			});
 		}
 	} catch (error) {
-		console.error("Error en el servidor:", error); // Agregado para log de errores
 		res.status(500).json({
 			status: 500,
 			message: "Error en el servidor: " + error.message,

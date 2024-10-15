@@ -122,7 +122,7 @@ const UpdateProfile = ({ navigation }) => {
     // Funciones para cargar razas y municipios según selección
     const loadRazasPorCategoria = async (categoriaId) => {
         try {
-            const response = await axiosClient.get(`/razas/listarRazasPorCategoria/${categoriaId}`);
+            const response = await axiosClient.get(`/razas/listarrazas/${categoriaId}`);
             setRazasPorCategoria(response.data);
         } catch (error) {
             console.error('Error al obtener las razas:', error);
@@ -132,7 +132,7 @@ const UpdateProfile = ({ navigation }) => {
 
     const loadMunicipiosPorDepartamento = async (departamentoId) => {
         try {
-            const response = await axiosClient.get(`/municipios/listarMunicipiosPorDepartamento/${departamentoId}`);
+            const response = await axiosClient.get(`/municipios/listardepartamento/${departamentoId}`);
             setMunicipiosPorDepartamento(response.data);
         } catch (error) {
             console.error('Error al obtener los municipios:', error);

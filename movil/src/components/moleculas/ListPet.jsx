@@ -8,9 +8,15 @@ import { Tooltip } from 'react-native-elements';
 
 const ListPet = ({ visible, onClose, pet, refreshPets }) => {
   const navigation = useNavigation();
+
   const [vacunas, setVacunas] = useState([]);
   const [isGuest, setIsGuest] = useState(false);
+  const user = AsyncStorage.getItem('user');
+  // const parsedUser = user ? JSON.parse(user) : null;
+  // Convertir las imágenes a un array
   const imagesArray = pet && pet.imagenes ? pet.imagenes.split(',') : [];
+
+  // Estado para la imagen principal
   const [mainImage, setMainImage] = useState(
     imagesArray.length > 0
       ? `${axiosClient.defaults.baseURL}/uploads/${imagesArray[0]}`
@@ -19,7 +25,10 @@ const ListPet = ({ visible, onClose, pet, refreshPets }) => {
 
   useEffect(() => {
     if (pet && pet.imagenes) {
+      // Convertir las imágenes a un array si es necesario
       const imagesArray = typeof pet.imagenes === 'string' ? pet.imagenes.split(',') : pet.imagenes;
+
+      // Asegurarse de que el array tenga elementos
       if (Array.isArray(imagesArray) && imagesArray.length > 0) {
         setMainImage(`${axiosClient.defaults.baseURL}/uploads/${imagesArray[0]}`);
       } else {
@@ -46,24 +55,27 @@ const ListPet = ({ visible, onClose, pet, refreshPets }) => {
   }, []);
 
   useEffect(() => {
-    const fetchVacunas = async () => {
-      if (!pet || !pet.id_mascota) {
-        console.error('No se encontró id_mascota en la mascota seleccionada.');
-        return;
-      }
-      try {
-        const response = await axiosClient.get(`/vacunas/listarVacunasAsociadaAMascota/${pet.id_mascota}`);
-        setVacunas(response.data);
-        console.log("Datos de la vacuna de la mascota: ", response.data);
-      } catch (error) {
-        console.error('Error al listar vacunas:', error);
-      }
-    };
-
     if (pet && pet.id_mascota) {
+      const fetchVacunas = async () => {
+        try {
+          // Limpia el estado de vacunas antes de hacer la nueva solicitud
+          setVacunas([]);
+
+          const response = await axiosClient.get(`/vacunas/listarVacunasAsociadaAMascota/${pet.id_mascota}`);
+          setVacunas(response.data);
+          console.log("Datos de la mascota y vacuna: ", response.data);
+          console.log("Datos de la mascota: ", pet);
+        } catch (error) {
+          // console.error('Error al listar vacunas:', error);
+        }
+      };
       fetchVacunas();
+    } else {
+      // Si no hay una mascota seleccionada, limpia las vacunas
+      setVacunas([]);
     }
   }, [pet]);
+
 
   const handleAdoptar = async () => {
     if (isGuest) {
@@ -96,6 +108,7 @@ const ListPet = ({ visible, onClose, pet, refreshPets }) => {
     }
   };
 
+  // Verifica si pet es null o undefined
   if (!pet) {
     return;
   }
@@ -111,6 +124,7 @@ const ListPet = ({ visible, onClose, pet, refreshPets }) => {
   const calculateAge = (birthDate) => {
     const today = new Date();
     const birth = new Date(birthDate);
+
     let ageYears = today.getFullYear() - birth.getFullYear();
     let ageMonths = today.getMonth() - birth.getMonth();
 
@@ -118,6 +132,7 @@ const ListPet = ({ visible, onClose, pet, refreshPets }) => {
       ageYears--;
       ageMonths += 12;
     }
+
     if (today.getDate() < birth.getDate()) {
       ageMonths--;
       if (ageMonths < 0) {
@@ -125,45 +140,59 @@ const ListPet = ({ visible, onClose, pet, refreshPets }) => {
         ageMonths += 12;
       }
     }
+
     return { years: ageYears, months: ageMonths };
   };
+  const peso = parseFloat(pet.peso);
 
+  // Calcula la edad
   const { years, months } = calculateAge(pet.fecha_nacimiento);
-
   return (
     <RNModal visible={visible} onRequestClose={onClose} transparent>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-            <View style={styles.petInfoContainer}>
-              <Image source={{ uri: mainImage }} style={styles.petImage} />
+            {/* Información detallada de la mascota */}
+            <View style={styles.header}>
+              <Image
+                source={{ uri: mainImage }}
+                style={styles.petImage}
+              />
               <View style={styles.headerInfo}>
-                <Text style={styles.petName}>{pet.nombre_mascota}</Text>
-                <Text style={styles.location}>
-                  <Icon name="place" size={16} color="black" /> {pet.municipio || 'Ubicación desconocida'}
-                </Text>
+                <Text style={styles.petName}>{pet ? pet.nombre_mascota : 'Nombre desconocido'}</Text>
                 <View style={styles.adoptionStatusContainer}>
                   <Text style={styles.adoptionStatus}>
-                    {pet.estado === 'En Adopcion' || pet.estado === 'Urgente' ? 'En Adopción' : 'Estado no disponible'}
+                    {pet && (pet.estado === 'En Adopcion' || pet.estado === 'Urgente')
+                      ? 'En Adopción'
+                      : 'Estado no disponible'}
                   </Text>
-                  <Icon name="star" size={20} color="black" />
+                  <Icon name="star" size={20} color="black" style={styles.adoptionIcon} />
                 </View>
+                <Text style={styles.location}>
+                  <Icon name="place" size={16} color="black" /> {pet ? pet.municipio || 'Ubicación desconocida' : 'Ubicación desconocida'}
+                </Text>
               </View>
             </View>
 
+            {/* Fotos adicionales */}
             {imagesArray.length > 0 && (
               <View style={styles.photosContainer}>
                 <Text style={styles.morePhotosText}>Fotos</Text>
-                <ScrollView horizontal>
+                <View style={styles.photosRow}>
                   {imagesArray.map((image, index) => (
                     <TouchableOpacity key={index} onPress={() => setMainImage(`${axiosClient.defaults.baseURL}/uploads/${image}`)}>
-                      <Image source={{ uri: `${axiosClient.defaults.baseURL}/uploads/${image}` }} style={styles.smallImage} />
+                      <Image
+                        source={{ uri: `${axiosClient.defaults.baseURL}/uploads/${image}` }}
+                        style={styles.smallImage}
+                      />
                     </TouchableOpacity>
                   ))}
-                </ScrollView>
+                </View>
               </View>
             )}
 
+
+            {/* Detalles */}
             <View style={styles.detailsContainer}>
               <Text style={styles.sectionTitle}>Mis datos</Text>
               <View style={styles.detailsGrid}>
@@ -197,7 +226,7 @@ const ListPet = ({ visible, onClose, pet, refreshPets }) => {
                   >
                     <View style={styles.dataRow}>
                       <Icon name="fitness-center" size={20} color="black" />
-                      <Text style={styles.dataText}>{pet.peso} kg</Text>
+                      <Text style={styles.dataText}>{peso} kg</Text>
                     </View>
                   </Tooltip>
 
@@ -236,47 +265,70 @@ const ListPet = ({ visible, onClose, pet, refreshPets }) => {
                     pointerColor="black"
                   >
                     <View style={styles.dataRow}>
-                      <Icon name="healing" size={20} color="black" />
-                      <Text style={styles.dataText}>{pet.esterilizado ? 'Esterilizado' : 'No esterilizado'}</Text>
+                      <Icon name="add-box" size={20} color="black" />
+                      <Text style={styles.dataText}>{pet.esterilizado}</Text>
                     </View>
                   </Tooltip>
 
                   <Tooltip
-                    popover={<Text>Fecha de registro de la mascota</Text>}
+                    popover={<Text>Tamaño de la mascota</Text>}
                     containerStyle={styles.tooltipContainer}
                     pointerColor="black"
                   >
                     <View style={styles.dataRow}>
-                      <Icon name="event" size={20} color="black" />
-                      <Text style={styles.dataText}>{formatDate(pet.fecha_registro)}</Text>
+                      <Icon name="filter-tilt-shift" size={20} color="black" />
+                      <Text style={styles.dataText}>{pet.tamano}</Text>
+                    </View>
+                  </Tooltip>
+
+                  <Tooltip
+                    popover={<Text>Categoría de la mascota</Text>}
+                    containerStyle={styles.tooltipContainer}
+                    pointerColor="black"
+                  >
+                    <View style={styles.dataRow}>
+                      <Icon name="pets" size={20} color="black" />
+                      <Text style={styles.dataText}>{pet.categoria}</Text>
                     </View>
                   </Tooltip>
                 </View>
               </View>
-
-              <View style={styles.vaccinesContainer}>
-                <Text style={styles.sectionTitle}>Vacunas</Text>
-                {vacunas.length > 0 ? (
-                  vacunas.map((vacuna, index) => (
-                    <Text key={index} style={styles.vaccineText}>
-                      {vacuna.nombre_vacuna} - {vacuna.fecha}
-                    </Text>
-                  ))
-                ) : (
-                  <Text style={styles.vaccineText}>No hay vacunas registradas</Text>
-                )}
-              </View>
             </View>
 
-            {(pet.estado !== 'Adoptado' && pet.estado !== 'Reservado' && pet.estado === 'En Adopcion') && (
-              <TouchableOpacity style={[styles.button, styles.adoptButton]} onPress={handleAdoptar}>
-                <Text style={styles.buttonText}>¡Adóptame!</Text>
-              </TouchableOpacity>
+            {/* Descripción */}
+            <Text style={styles.sectionTitle}>Descripción:</Text>
+            <Text style={styles.modalDescription}>{pet.descripcion}</Text>
+
+            {/* Sección de vacunas */}
+            <Text style={styles.sectionTitle}>Vacunas:</Text>
+            {vacunas.length > 0 ? (
+              <View style={styles.vacunaRowContainer}>
+                {vacunas.map((vacuna) => (
+                  <View key={vacuna.id_vacuna} style={styles.vacunaContainer}>
+                    <Text style={styles.modalSubtitle}>Enfermedad: {vacuna.enfermedad}</Text>
+                    <Text style={styles.modalSubtitle}>Fecha: {formatDate(vacuna.fecha_vacuna)}</Text>
+                    <Text style={styles.modalSubtitle}>Estado: {vacuna.estado}</Text>
+                  </View>
+                ))}
+              </View>
+            ) : (
+              <Text style={styles.noVacunasText}>No hay vacunas asociadas a esta mascota.</Text>
             )}
 
+            {/* Botón para adoptar */}
+            {user && user.rol !== 'superusuario' && (
+              <>
+                {(pet.estado !== 'Adoptado' && pet.estado !== 'Reservado') && (
+                  <TouchableOpacity style={[styles.button, styles.adoptButton]} onPress={handleAdoptar}>
+                    <Text style={styles.buttonText}>¡Adóptame!</Text>
+                  </TouchableOpacity>
+                )}
+              </>
+            )}
 
-            <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-              <Icon name="close" size={28} color="white" />
+            {/* Botón para cerrar */}
+            <TouchableOpacity style={styles.button} onPress={onClose}>
+              <Text style={styles.buttonText}>Cerrar</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>
@@ -286,146 +338,191 @@ const ListPet = ({ visible, onClose, pet, refreshPets }) => {
 };
 
 const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
+  tooltipContainer: {
+    padding: 15,
+    height: 60,
+    width: 250,
+    borderRadius: 20,
+    backgroundColor: "#b5b5b5",
+    borderWidth: 2,
+    borderColor: "#E94560",
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'space-around', // Mayor espacio entre elementos
+    alignItems: 'center',
+    backgroundColor: 'gray',
   },
   modalContent: {
+    backgroundColor: '#b5b5b5',
+    borderRadius: 25, // Bordes muy redondeados
+    padding: 30,
     width: '90%',
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 20,
-    maxHeight: '90%',
-    position: 'relative',
+    maxHeight: '80%',
+    shadowColor: 'black', // Sombra azul oscura
+    shadowOffset: { width: 5, height: 5 },
+    shadowOpacity: 0.6,
+    shadowRadius: 15,
+    elevation: 10,
+    alignItems: 'center',
   },
   scrollViewContainer: {
     flexGrow: 1,
-    paddingBottom: 20,
-  },
-  petInfoContainer: {
-    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
+    paddingVertical: 20,
+  },
+  header: {
+    flexDirection: 'row',
+    marginBottom: 30, // Más espacio debajo
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   petImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 120,
+    height: 120, // Imagen más grande
+    borderRadius: 50, // Completamente redonda
     marginRight: 20,
+    borderWidth: 5,
+    borderColor: '#E94560', // Borde rojo brillante
   },
   headerInfo: {
     flex: 1,
+    justifyContent: 'center',
   },
   petName: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#000',
-  },
-  location: {
-    fontSize: 16,
-    color: '#000',
-    marginVertical: 5,
+    fontSize: 28, // Texto más grande
+    fontWeight: '900', // Fuente más gruesa
+    color: 'black', // Blanco brillante
+    textTransform: 'uppercase', // Texto en mayúsculas
+    marginBottom: 10,
   },
   adoptionStatusContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 10,
   },
   adoptionStatus: {
-    fontSize: 16,
+    fontSize: 20, // Más grande
+    color: '#FF5733', // Naranja fuerte
     fontWeight: 'bold',
-    color: '#28a745',
-    marginRight: 5,
-  },
-  photosContainer: {
-    marginVertical: 20,
-  },
-  morePhotosText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#000',
-    marginBottom: 10,
-  },
-  smallImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 10,
     marginRight: 10,
   },
-  detailsContainer: {
+  adoptionIcon: {
+    marginLeft: 10,
+    color: 'black', // Blanco
+  },
+  location: {
+    fontSize: 18,
+    color: 'black', // Gris suave
+    marginTop: 10,
     marginBottom: 20,
+    fontStyle: 'italic',
+  },
+  photosContainer: {
+    marginBottom: 30,
+  },
+  photosRow: {
+    flexDirection: 'row',
+    marginRight: 50,
+  },
+  smallImage: {
+    width: 70,
+    height: 70, // Imágenes más grandes
+    borderRadius: 15,
+    marginRight: 15,
+    borderWidth: 2,
+    borderColor: '#C7C7C7', // Borde gris claro
+  },
+  morePhotosText: {
+    fontSize: 20,
+    paddingBottom: 10,
+    color: 'black',
+    textDecorationLine: 'underline',
+    fontWeight: '700',
+  },
+  detailsContainer: {
+    marginTop: 20,
+    width: '100%',
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 24, // Más grande
     fontWeight: 'bold',
-    color: '#000',
-    marginBottom: 10,
+    marginBottom: 15,
+    color: 'black', // Blanco
   },
   detailsGrid: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
   },
   detailsColumn: {
-    flex: 1,
+    width: '48%',
   },
   dataRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 12,
   },
   dataText: {
-    fontSize: 16,
-    color: '#000',
+    fontSize: 18,
+    color: 'black', // Texto blanco
     marginLeft: 10,
   },
   modalDescription: {
-    fontSize: 16,
-    color: '#000',
-    marginBottom: 20,
+    fontSize: 18,
+    color: 'black', // Texto blanco
+    marginTop: 15,
+    marginBottom: 25,
+    textAlign: 'center',
+    lineHeight: 25, // Más espacio entre líneas
   },
   vacunaRowContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+    marginBottom: 10,
+    color:'black'
   },
   vacunaContainer: {
+    marginBottom: 20,
     width: '48%',
-    marginBottom: 10,
+    color:'black'
   },
   modalSubtitle: {
-    fontSize: 14,
-    color: '#000',
+    fontSize: 18,
+    color: 'black', // Azul claro brillante
+    marginBottom: 10,
+    fontWeight: 'bold',
   },
   noVacunasText: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: 18,
+    color: 'black',
     fontStyle: 'italic',
-    marginBottom: 20,
+    textAlign: 'center',
+    marginBottom: 25,
   },
   button: {
-    padding: 15,
-    borderRadius: 10,
+    backgroundColor: '#FF5733', // Naranja vibrante
+    borderRadius: 15,
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    marginTop: 20,
     alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 10,
+    width: '100%',
   },
   adoptButton: {
-    backgroundColor: 'black',
+    backgroundColor: '#00D2D3', // Azul claro vibrante
   },
   buttonText: {
-    fontSize: 18,
+    color: 'black', // Texto blanco
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#fff',
-  },
-  closeButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    backgroundColor: '#FF5A5F',
-    borderRadius: 15,
-    padding: 5,
+    textTransform: 'uppercase',
   },
 });
+
 
 export default ListPet;

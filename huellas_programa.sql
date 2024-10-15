@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-09-2024 a las 22:20:36
+-- Tiempo de generación: 15-10-2024 a las 17:24:20
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `adopcion_mascotas`
+-- Base de datos: `huellas_programa`
 --
 
 -- --------------------------------------------------------
@@ -37,6 +37,15 @@ CREATE TABLE `adopciones` (
   `estado_anterior` enum('En Adopcion','Urgente') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `adopciones`
+--
+
+INSERT INTO `adopciones` (`id_adopcion`, `fk_id_mascota`, `fk_id_usuario_adoptante`, `fecha_adopcion_proceso`, `fecha_adopcion_aceptada`, `estado`, `estado_anterior`) VALUES
+(2, 3, 19, '2024-10-05', '2024-10-05', 'aceptada', 'Urgente'),
+(3, 2, 17, '2024-10-07', NULL, 'proceso de adopcion', 'En Adopcion'),
+(4, 4, 17, '2024-10-08', '2024-10-08', 'aceptada', 'En Adopcion');
+
 -- --------------------------------------------------------
 
 --
@@ -54,7 +63,10 @@ CREATE TABLE `categorias` (
 --
 
 INSERT INTO `categorias` (`id_categoria`, `nombre_categoria`, `estado`) VALUES
-(1, 'perro', 'activa');
+(2, 'perro', 'activa'),
+(3, 'gato', 'activa'),
+(4, 'conejo', 'activa'),
+(5, 'chivo', 'activa');
 
 -- --------------------------------------------------------
 
@@ -73,7 +85,11 @@ CREATE TABLE `departamentos` (
 --
 
 INSERT INTO `departamentos` (`id_departamento`, `nombre_departamento`, `codigo_dane`) VALUES
-(1, 'Huila', '2671');
+(4, 'Antioquia', '05001'),
+(5, 'Boyaca', '15001'),
+(6, 'Caldas', '12345'),
+(7, 'cundinamarca', '32345'),
+(8, 'huila', '43231');
 
 -- --------------------------------------------------------
 
@@ -93,7 +109,17 @@ CREATE TABLE `imagenes` (
 --
 
 INSERT INTO `imagenes` (`id_imagen`, `fk_id_mascota`, `ruta_imagen`, `fecha_registro`) VALUES
-(1, 1, 'imagenes-1726676489554-794026849.jfif', '2024-09-18 16:21:29');
+(2, 2, 'imagenes-1728090459614-517461891.jpg', '2024-10-05 01:07:39'),
+(3, 2, 'imagenes-1728090459614-369811245.jpg', '2024-10-05 01:07:39'),
+(4, 3, 'imagenes-1728097715996-802683672.jpg', '2024-10-05 03:08:36'),
+(5, 3, 'imagenes-1728097715998-755799346.jpg', '2024-10-05 03:08:36'),
+(6, 3, 'imagenes-1728097716000-815901771.jpg', '2024-10-05 03:08:36'),
+(7, 3, 'imagenes-1728097715998-57417632.jpg', '2024-10-05 03:08:36'),
+(8, 4, 'imagenes-1728110525604-18815204.jpg', '2024-10-05 06:42:05'),
+(9, 4, 'imagenes-1728110525606-54849439.jpg', '2024-10-05 06:42:05'),
+(10, 5, 'imagenes-1728420029537-961268792.jpg', '2024-10-08 20:40:29'),
+(11, 5, 'imagenes-1728420029536-285753230.jpg', '2024-10-08 20:40:29'),
+(12, 16, 'imagenes-1728981603441-396302877.jpg', '2024-10-15 08:40:03');
 
 -- --------------------------------------------------------
 
@@ -122,7 +148,11 @@ CREATE TABLE `mascotas` (
 --
 
 INSERT INTO `mascotas` (`id_mascota`, `nombre_mascota`, `fecha_nacimiento`, `estado`, `descripcion`, `esterilizado`, `tamano`, `peso`, `fk_id_categoria`, `fk_id_raza`, `fk_id_departamento`, `fk_id_municipio`, `sexo`) VALUES
-(1, 'toby', '2024-08-08', 'En Adopcion', 'es muy lindo y tierno', 'si', 'Mediano', 75.00, 1, 1, 1, 1, 'Hembra');
+(2, 'pepe', '2023-03-09', 'Reservado', 'es muy imperactivo, cariñozo, delicado con los niños', 'si', 'Grande', 68.00, NULL, 4, NULL, 9, 'Macho'),
+(3, 'natacha', '2024-06-19', 'Adoptado', 'cariñosa, obediente, inteligente, linda, aseada, cuida de los niños', 'no', 'Mediano', 50.00, NULL, 3, NULL, 9, 'Hembra'),
+(4, 'quiti', '2024-04-09', 'Adoptado', 'tierna, limpia y no es callejera', 'si', 'Pequeno', 20.00, NULL, 5, NULL, 3, 'Hembra'),
+(5, 'gemelos ', '2024-10-02', 'En Adopcion', 'otra cosas hay', 'si', 'Intermedio', 60.00, 2, 4, 6, 7, 'Macho'),
+(16, 'lolo', '3023-09-23', 'Urgente', 'todo esta muy bien', 'si', 'Pequeno', 12.00, 3, 7, 7, 8, 'Macho');
 
 -- --------------------------------------------------------
 
@@ -142,7 +172,15 @@ CREATE TABLE `municipios` (
 --
 
 INSERT INTO `municipios` (`id_municipio`, `nombre_municipio`, `codigo_dane`, `fk_id_departamento`) VALUES
-(1, 'Pitalito', '2567', 1);
+(2, 'andes', '05034', 4),
+(3, 'barbosa', '05079', 4),
+(4, 'tunja', '15002', 5),
+(5, 'belen', '15087', 5),
+(6, 'manizales', '17001', 6),
+(7, 'la dorada', '17380', 6),
+(8, 'cabrera', '25120', 7),
+(9, 'pitalito', '41551', 8),
+(10, 'gigante', '41306', 8);
 
 -- --------------------------------------------------------
 
@@ -159,6 +197,16 @@ CREATE TABLE `notificaciones` (
   `estado` enum('aceptada','rechazada','proceso de adopcion','pendiente') DEFAULT 'pendiente'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `notificaciones`
+--
+
+INSERT INTO `notificaciones` (`id_notificacion`, `id_usuario`, `mensaje`, `leido`, `fecha`, `estado`) VALUES
+(4, 17, 'Tu solicitud de cambio de rol fue denegada por el Super Usuario Jose.', 0, '2024-10-05 00:06:32', 'pendiente'),
+(6, 19, 'El Super Usuario Jose ha aceptado tu solicitud de cambio de rol. Para continuar con el cambio de rol, debes comunicarte al WhatsApp 3188690317 de Jose para confirmar el cambio.', 0, '2024-10-05 06:49:35', 'pendiente'),
+(8, 19, 'Tu solicitud de cambio de rol fue denegada por el Super Usuario kevin fernando.', 0, '2024-10-11 05:19:21', 'pendiente'),
+(9, 23, 'El Super Usuario kevin fernando ha aceptado tu solicitud de cambio de rol. Para continuar con el cambio de rol, debes comunicarte al WhatsApp 3142124303 de kevin fernando para confirmar el cambio.', 0, '2024-10-11 05:19:28', 'pendiente');
+
 -- --------------------------------------------------------
 
 --
@@ -171,24 +219,6 @@ CREATE TABLE `password_resets` (
   `token` varchar(255) NOT NULL,
   `expires_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `password_resets`
---
-
-INSERT INTO `password_resets` (`id`, `correo`, `token`, `expires_at`) VALUES
-(1, 'sergiocanacue0@gmail.com', '9996104bf881092b7b0256d6a5dfb8c8ab7e5db99b13cf81384e882913f026b9', '2024-09-14 15:27:53'),
-(2, 'sergiocanacue0@gmail.com', 'c91be4715f8a8e66edf21191c190f1c043a618fb2fb6d0ffcf04cc5d926e13ce', '2024-09-14 15:31:08'),
-(3, 'sergiocanacue0@gmail.com', '6945c7cb37aa4d47faadf5cef32225a2d8a0c1facc1440d83be9abdb883a9522', '2024-09-14 18:35:39'),
-(4, 'sergiocanacue0@gmail.com', 'e6178fbd45ccbd0623ec5bc60da52090fe285a1129dba6e8118d84d70e7dd07e', '2024-09-14 18:43:05'),
-(5, 'sergiocanacue0@gmail.com', 'd566b4e51cd5549f5ce8f3f19bae25c32d577541ea2e2f823a47307f439108f2', '2024-09-18 12:53:33'),
-(6, 'sergiocanacue0@gmail.com', 'af8ab3fd5bd60c3f90b654b9845eaa578f9a138b09245f8229ad91716add4651', '2024-09-18 12:56:32'),
-(7, 'sergiocanacue0@gmail.com', '64286629756f804a43207f7d45c263be3ff1bdecb58cf83fb51b36ac9d2eab5c', '2024-09-18 13:13:04'),
-(8, 'sergiocanacue0@gmail.com', '717978a09f026ef22226c2c3b76b9df8fd0268300dbe698afde61f338f0fdf7a', '2024-09-18 13:13:35'),
-(9, 'sergiocanacue0@gmail.com', 'b5410d959818ffa827427dd92b4910fefedc17f8c44adef8dd5785f291546fe9', '2024-09-18 13:13:37'),
-(10, 'sergiocanacue0@gmail.com', '0f86b267a0a453cf3696cc7337fd4022b5e52cc7d4861ca7eb2bf78cfc8e98b3', '2024-09-18 13:51:48'),
-(11, 'sergiocanacue0@gmail.com', '02054a3b53c7798ea5b2a15bfcd271b5e23afb384d0abdef468a1d0e6148cc79', '2024-09-18 13:54:11'),
-(12, 'sergiocanacue0@gmail.com', 'fb2f4ec8ab0c47d3600cc95fa28fe785fd801d3b7e126532080af99bc93e865e', '2024-09-19 13:44:48');
 
 -- --------------------------------------------------------
 
@@ -207,7 +237,16 @@ CREATE TABLE `razas` (
 --
 
 INSERT INTO `razas` (`id_raza`, `nombre_raza`, `fk_id_categoria`) VALUES
-(1, 'pitbull', 1);
+(2, 'pitbull', 2),
+(3, 'chao chao', 2),
+(4, 'pastor aleman', 2),
+(5, 'angora', 3),
+(6, 'egipcio', 3),
+(7, 'siames', 3),
+(8, 'mini lop', 4),
+(9, 'holandez', 4),
+(10, 'boer', 5),
+(11, 'damasco', 5);
 
 -- --------------------------------------------------------
 
@@ -234,9 +273,12 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id_usuario`, `nombre`, `apellido`, `direccion`, `telefono`, `correo`, `tipo_documento`, `documento_identidad`, `password`, `img`, `rol`) VALUES
-(1, 'Jose', 'Vargas', 'Isnos', '3188690317', 'dajozavargas@gmail.com', 'cedula', '1077848366', '$2b$10$m9AQBnktTaluQqDZhwEZ8.pmfkXbOHQUpf6s/iUg9D4uMn/kLpHf2', 'img-1726372425857-81773253.png', 'superusuario'),
-(15, 'Carlos', 'Restrepo', 'pitalito', '3172529438', 'sergiocanacue0@gmail.com', 'cedula', '4532876591', '$2b$10$ntF9cwj6emNmyNPUz37v3OX07HmonXZ/JG4kTzucUKsSE8SLR40Ia', 'img-1726774364485-756581177.jfif', 'usuario'),
-(16, 'Mario', 'Ramirez', 'timana', '3209044412', 'mario@gmail.com', 'cedula', '7865389427', '$2b$10$NXnvSahiOXwuJ8xZHlUtiO7qJRKd27aZICgfOhZfPL12mldWsnHt.', 'img-1726340433096-742154803.jfif', 'administrador');
+(1, 'kevin fernando', 'mahecha', 'pitalito', '3142124303', 'mahecha@gmail.com', 'cedula', '1077848366', '$2b$10$m6ok7JSX2JU4LCZNSKyxfeFBv/3YrIp3IO1nwW4rB3LCpxliYvXWO', 'img-1728086267356-294040990.jpg', 'superusuario'),
+(17, 'kevin fernando', 'andrade mahecha', 'calle 1b #20-70', '3142124302', 'andrade@gmail.com', 'cedula', '1083864350', '$2b$10$qpbzPM6IGJaTxIFNjeRSf.2To0Rz148UEWhObqAod8bEAJo1eK2ei', 'img-1728624264432-315823060.jpg', 'usuario'),
+(18, 'kevin', 'andrade', 'calle 23 barrio sur', '1234456634', 'kevin@gmail.com', 'cedula', '12345678', '$2b$10$u67mpyyubrD7Y/GcLCplh.y12/p9XF99GTto/LbxYIJ50rlpA5/s2', 'img-1728086130235-228447344.jpg', 'administrador'),
+(19, 'julian', 'valdez', 'bruselas', '1234213242', 'julian@gmail.com', 'cedula', '123232453', '$2b$10$9HJzuxtDSDJNHqQZy5ggZuDDevxIwVkVjtcbYIsGakeXpLnWJWN3u', NULL, 'usuario'),
+(20, 'kevin mamalon', 'epicardo', 'que te importa', '3122344321', 'melo@gmail.com', '', '1083864351', '$2b$10$DN.WyyP8IjnSsf/aJGKwt.s2IM9oErkeMBFeXwlMaWqF9y9WuTmcG', NULL, 'usuario'),
+(23, 'cacaito', 'betancour cocoma', 'san francisco', '3123131231', 'cacaito@gmail.com', 'cedula', '1031161875', '$2b$10$E23RJcyTmlVx61fuUSm9u.fXm/DEDN3Hg/xiZRuOY.TVcutwb6h76', 'img-1728623501382-281081079.jpg', 'usuario');
 
 -- --------------------------------------------------------
 
@@ -251,6 +293,15 @@ CREATE TABLE `vacunas` (
   `enfermedad` varchar(100) NOT NULL,
   `estado` enum('Completa','Incompleta','En proceso','no se') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `vacunas`
+--
+
+INSERT INTO `vacunas` (`id_vacuna`, `fk_id_mascota`, `fecha_vacuna`, `enfermedad`, `estado`) VALUES
+(1, 3, '2024-10-01', 'pardo rojo', 'Completa'),
+(2, 2, '2024-08-06', 'pardo rojo', 'Completa'),
+(3, 3, '2024-06-11', 'moquillo', 'En proceso');
 
 --
 -- Índices para tablas volcadas
@@ -346,43 +397,43 @@ ALTER TABLE `vacunas`
 -- AUTO_INCREMENT de la tabla `adopciones`
 --
 ALTER TABLE `adopciones`
-  MODIFY `id_adopcion` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_adopcion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `departamentos`
 --
 ALTER TABLE `departamentos`
-  MODIFY `id_departamento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_departamento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `imagenes`
 --
 ALTER TABLE `imagenes`
-  MODIFY `id_imagen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_imagen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `mascotas`
 --
 ALTER TABLE `mascotas`
-  MODIFY `id_mascota` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_mascota` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `municipios`
 --
 ALTER TABLE `municipios`
-  MODIFY `id_municipio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_municipio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `notificaciones`
 --
 ALTER TABLE `notificaciones`
-  MODIFY `id_notificacion` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_notificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `password_resets`
@@ -394,19 +445,19 @@ ALTER TABLE `password_resets`
 -- AUTO_INCREMENT de la tabla `razas`
 --
 ALTER TABLE `razas`
-  MODIFY `id_raza` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_raza` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT de la tabla `vacunas`
 --
 ALTER TABLE `vacunas`
-  MODIFY `id_vacuna` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_vacuna` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Restricciones para tablas volcadas

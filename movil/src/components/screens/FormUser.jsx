@@ -218,7 +218,7 @@ const FormUser = ({ navigation }) => {
                                         value={values.tipo_documento}
                                         placeholder={{ label: 'Seleccione un tipo de documento', value: null }}
                                         style={pickerSelectStyles}
-                                        placeholderTextColor="#666"
+                                        placeholderTextColor="#fff"
                                     />
                                 </View>
                                 {errors.tipo_documento && <Text style={styles.errorText}>{errors.tipo_documento}</Text>}
@@ -255,7 +255,7 @@ const FormUser = ({ navigation }) => {
                                     </Text>
                                 </View>
 
-                                <Button title="Registrar" onPress={handleSubmit} color="#f39c12" />
+                                <Button title="Registrar" onPress={handleSubmit} color="black" />
                             </>
                         )}
                     </Formik>
@@ -264,75 +264,85 @@ const FormUser = ({ navigation }) => {
         </View>
     );
 };
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#EDEBDE',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 16
+        padding: 16,
+
     },
     formContainer: {
-        backgroundColor: '#fff',
-        padding: 20,
-        borderRadius: 10,
+        padding: 25,
+        borderRadius: 15, // Bordes más redondeados
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 10,
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.2, // Mayor sombra para un efecto flotante
+        shadowRadius: 15,
         width: '100%',
         height: '100%',
-        maxWidth: 400
+        maxWidth: 400,
+        backgroundColor: '#b5b5b5', // Botón negro
+
     },
     goBackButton: {
-        marginBottom: 1
+        marginBottom: 15,
+        backgroundColor: '#000', // Botón negro
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+        alignItems: 'center',
     },
     goBackText: {
-        color: '#007bff',
-        fontSize: 16
+        color: '#fff', // Texto blanco para contraste en el botón negro
+        fontSize: 16,
+        fontWeight: '600', // Un poco más grueso para destacar
     },
     title: {
-        fontSize: 24,
+        fontSize: 26, // Un poco más grande
         fontWeight: 'bold',
-        color: '#666',
+        color: 'black', // Color blanco para el texto
         textAlign: 'center',
-        marginBottom: 20
+        marginBottom: 25,
     },
     avatarContainer: {
         alignItems: 'center',
-        marginBottom: 15,
+        marginBottom: 20,
     },
     avatar: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
+        width: 110, // Un poco más grande
+        height: 110,
+        borderRadius: 55,
+        borderWidth: 2,
+        borderColor: '#fff', // Un borde blanco para destacar la imagen
     },
     errorText: {
-        color: 'red',
+        color: '#FF4C4C', // Un rojo más llamativo para los errores
         marginBottom: 10,
     },
     input: {
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
-        marginBottom: 15,
-        padding: 10,
-        color: '#000',
+        borderBottomWidth: 2, // Líneas más gruesas
+        borderBottomColor: '#777', // Gris oscuro
+        marginBottom: 20,
+        padding: 12, // Más espacio interno
+        color: 'black', // Texto blanco
     },
     passwordContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 15
+        marginBottom: 20,
     },
     eyeIcon: {
-        marginLeft: 10
+        marginLeft: 10,
+        color: '#fff', // Color del ícono blanco
     },
     pickerContainer: {
-        marginBottom: 15
+        marginBottom: 20,
     },
     pickerLabel: {
-        fontSize: 16,
-        marginBottom: 5
+        fontSize: 18,
+        marginBottom: 8,
+        color: '#fff', // Texto blanco
     }
 });
 
@@ -342,21 +352,24 @@ const pickerSelectStyles = StyleSheet.create({
         paddingVertical: 12,
         paddingHorizontal: 10,
         borderWidth: 1,
-        borderColor: 'gray',
-        borderRadius: 4,
-        color: 'black',
+        borderColor: '#777', // Gris oscuro
+        borderRadius: 8,
+        color: 'white', // Texto blanco
         paddingRight: 30,
+        backgroundColor: '#fff', // Fondo oscuro
     },
     inputAndroid: {
         fontSize: 16,
         paddingHorizontal: 10,
         paddingVertical: 8,
-        borderWidth: 0.5,
-        borderColor: 'gray',
+        borderWidth: 1,
+        borderColor: '#777', // Gris oscuro
         borderRadius: 8,
-        color: 'black',
+        color: 'white', // Texto blanco
         paddingRight: 30,
+        backgroundColor: 'gray', // Fondo oscuro
     },
 });
+
 
 export default FormUser;

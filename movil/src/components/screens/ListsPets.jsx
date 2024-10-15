@@ -1,22 +1,19 @@
-// ListsPets.jsx
 import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
     TextInput,
-    Button,
     Alert,
     TouchableOpacity,
     StyleSheet,
     FlatList,
     ActivityIndicator,
-    ScrollView,
     Image
 } from 'react-native';
 import axiosClient from '../client/axiosClient';
 import Header from '../organismos/Header';
 import ListPet from '../moleculas/ListPet';
-import EstadoModal from '../organismos/EstadoModal';
+import EstadoModalUsu from '../organismos/EstadoModalUsu';
 import { useFocusEffect } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Importa AsyncStorage
@@ -43,7 +40,7 @@ const ListsPets = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedPet, setSelectedPet] = useState(null);
-    const [estadoModalVisible, setEstadoModalVisible] = useState(false);
+    const [estadoModalVisible, setEstadoModalVisible] = useState(true); // Mostrar primero el modal
     const [selectedTitle, setSelectedTitle] = useState('');
     const [userRole, setUserRole] = useState('invitado'); // Estado para almacenar el rol del usuario
 
@@ -116,7 +113,7 @@ const ListsPets = () => {
 
     const handleEstadoChipPress = (estado) => {
         setSelectedTitle(estado);
-        setEstadoModalVisible(true); // Muestra el EstadoModal
+        setEstadoModalVisible(true); // Muestra el EstadoModalUsu
     };
 
     const handleAdoptPress = (pet) => {
@@ -134,6 +131,10 @@ const ListsPets = () => {
             setSelectedPet(pet);
             setModalVisible(true);
         }
+    };
+
+    const handleCloseEstadoModal = () => {
+        setEstadoModalVisible(false);
     };
 
     const renderPetCard = ({ item }) => (
@@ -187,54 +188,60 @@ const ListsPets = () => {
 
     return (
         <View style={styles.container}>
-            <Header title="Lista de mascotas" />
-            <View style={styles.searchContainer}>
-                <Icon name="search" size={20} color="black" style={styles.searchIcon} />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Buscar..."
-                    value={filterValue}
-                    onChangeText={setFilterValue}
-                />
-            </View>
-            <View style={styles.dropdown}>
-                {statusOptions.map(option => (
-                    <TouchableOpacity
-                        key={option.uid}
-                        style={[styles.dropdownItem, selectedStatus === option.uid && styles.selectedDropdownItem]}
-                        onPress={() => setSelectedStatus(option.uid)}
-                    >
-                        <Text style={styles.dropdownText}>{option.name}</Text>
-                    </TouchableOpacity>
-                ))}
-            </View>
-            {isLoading ? (
-                <ActivityIndicator size="large" color="#0000ff" />
-            ) : (
-                <FlatList
-                    data={filteredPets}
-                    renderItem={renderPetCard}
-                    keyExtractor={item => item.id_mascota.toString()}
-                    numColumns={2}
-                    columnWrapperStyle={styles.row}
-                />
-            )}
-            <ListPet visible={modalVisible} onClose={handleModalClose} pet={selectedPet} />
-            <EstadoModal
+            {/* Modal para EstadoUsu al iniciar */}
+            <EstadoModalUsu
                 isVisible={estadoModalVisible}
-                onClose={() => setEstadoModalVisible(false)}
+                onClose={handleCloseEstadoModal}
                 title={selectedTitle}
             />
+
+            {/* Renderizar el contenido solo si el modal está cerrado */}
+            {!estadoModalVisible && (
+                <>
+                    <Header title="Lista de mascotas" />
+                    <View style={styles.searchContainer}>
+                        <Icon name="search" size={20} color="black" style={styles.searchIcon} />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Buscar..."
+                            value={filterValue}
+                            onChangeText={setFilterValue}
+                        />
+                    </View>
+                    <View style={styles.dropdown}>
+                        {statusOptions.map(option => (
+                            <TouchableOpacity
+                                key={option.uid}
+                                style={[styles.dropdownItem, selectedStatus === option.uid && styles.selectedDropdownItem]}
+                                onPress={() => setSelectedStatus(option.uid)}
+                            >
+                                <Text style={styles.dropdownText}>{option.name}</Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+                    {isLoading ? (
+                        <ActivityIndicator size="large" color="#0000ff" />
+                    ) : (
+                        <FlatList
+                            data={filteredPets}
+                            renderItem={renderPetCard}
+                            keyExtractor={item => item.id_mascota.toString()}
+                            numColumns={2}
+                            columnWrapperStyle={styles.row}
+                        />
+                    )}
+                    <ListPet visible={modalVisible} onClose={handleModalClose} pet={selectedPet} />
+                </>
+            )}
         </View>
     );
-
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 10,
-        backgroundColor:'#b5b5b5',
+        backgroundColor: '#b5b5b5',
     },
 
     searchContainer: {
@@ -245,7 +252,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         marginBottom: 16,
         paddingHorizontal: 8,
-        backgroundColor:'white',
+        backgroundColor: 'white',
     },
     searchIcon: {
         marginRight: 8,
@@ -259,20 +266,23 @@ const styles = StyleSheet.create({
     dropdown: {
         flexDirection: 'row',
         marginBottom: 16,
+        flexWrap: 'wrap',
     },
     dropdownItem: {
         padding: 8,
         marginRight: 8,
+        marginBottom: 8,
         borderWidth: 1,
         borderColor: '#ddd',
         borderRadius: 4,
+        backgroundColor: '#f8f8f8',
     },
     selectedDropdownItem: {
         backgroundColor: '#ddd',
     },
     dropdownText: {
         fontSize: 16,
-        color:'black',
+        color: 'black',
     },
     row: {
         flex: 1,
@@ -300,6 +310,7 @@ const styles = StyleSheet.create({
     },
     subtitle: {
         fontSize: 16,
+        color: '#555',
     },
     statusChip: {
         padding: 4,
@@ -309,10 +320,12 @@ const styles = StyleSheet.create({
     },
     statusText: {
         color: '#fff',
+        fontWeight: 'bold',
     },
     imageGrid: {
         flexDirection: 'row',
         flexWrap: 'wrap',
+        marginTop: 8,
     },
     singleImageGrid: {
         justifyContent: 'center',
@@ -331,6 +344,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
+        height: 80,
+        marginTop: 8,
     },
     image: {
         width: '100%',
@@ -340,6 +355,7 @@ const styles = StyleSheet.create({
     description: {
         fontSize: 14,
         color: '#666',
+        marginTop: 8,
     },
     button: {
         backgroundColor: 'black',

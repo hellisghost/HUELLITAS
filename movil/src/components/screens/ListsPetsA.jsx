@@ -52,6 +52,11 @@ const ListsPetsA = () => {
   const [estadoModalVisible, setEstadoModalVisible] = useState(false); // Estado para controlar la visibilidad del EstadoModal
   const [selectedTitle, setSelectedTitle] = useState(''); // Estado para controlar el título del modal
 
+  // Mostrar el EstadoModal al montar el componente
+  useEffect(() => {
+    setEstadoModalVisible(true);
+  }, []);
+
   useFocusEffect(
     useCallback(() => {
       fetchPets();
@@ -69,6 +74,7 @@ const ListsPetsA = () => {
       await getMascotas(); // Llama al contexto para obtener las mascotas
       setFilteredPets(mascotas);
     } catch (error) {
+      console.error('Error al obtener mascotas:', error);
       setError('No se pudieron cargar las mascotas. Inténtalo de nuevo más tarde.');
     } finally {
       setIsLoading(false);
@@ -106,26 +112,37 @@ const ListsPetsA = () => {
   const handleSubmitMascota = async (formData) => {
     setIsLoading(true);
     try {
+      console.log('FormData enviado:', formData);
+
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+
       if (mode === 'create') {
-        const response = await axiosClient.post('/mascotas/registrar', formData);
-        if (response.status === 200) {
+        const response = await axiosClient.post('/mascotas/registrar', formData, config);
+        if (response.status === 201 || response.status === 200) { // Considerar 201 como éxito para creación
           Alert.alert('Éxito', "Se registró con éxito la mascota");
           fetchPets();
         } else {
+          console.log('Error en el registro:', response);
           Alert.alert('Error', 'Error en el registro');
         }
       } else if (mode === 'update') {
-        const response = await axiosClient.put(`/mascotas/actualizar/${selectedPet.id_mascota}`, formData);
+        const response = await axiosClient.put(`/mascotas/actualizar/${selectedPet.id_mascota}`, formData, config);
         if (response.status === 200) {
           Alert.alert('Éxito', "Se actualizó con éxito la mascota");
           fetchPets();
         } else {
+          console.log('Error al actualizar:', response);
           Alert.alert('Error', 'Error al actualizar');
         }
       }
     } catch (error) {
-      Alert.alert('Error', 'Hubo un problema al registrar o actualizar la mascota.');
-      console.log("Error al registrar mascota: ", error);
+      console.error("Error al registrar o actualizar mascota:", error.response || error);
+      const errorMessage = error.response?.data?.mensaje || 'Hubo un problema al registrar o actualizar la mascota.';
+      Alert.alert('Error', errorMessage);
     } finally {
       setIsLoading(false);
       handleModalClose();
@@ -134,12 +151,18 @@ const ListsPetsA = () => {
 
   const handleSubmitVacuna = async (formData) => {
     try {
-      await axiosClient.post('/vacunas/registrar', formData);
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+      await axiosClient.post('/vacunas/registrar', formData, config);
       Alert.alert('Éxito', 'Vacuna registrada con éxito.');
       fetchPets();
     } catch (error) {
-      Alert.alert('Error', 'Error en el registro de la vacuna.');
-      console.log("Error al registrar vacuna: ", error);
+      console.error("Error al registrar vacuna:", error.response || error);
+      const errorMessage = error.response?.data?.mensaje || 'Error en el registro de la vacuna.';
+      Alert.alert('Error', errorMessage);
     }
     handleModalVacunaClose();
   };
@@ -154,8 +177,9 @@ const ListsPetsA = () => {
         Alert.alert('Error', 'No se pudo eliminar la mascota.');
       }
     } catch (error) {
-      Alert.alert('Error', 'Hubo un problema al eliminar la mascota.');
-      console.log("Error al eliminar mascota: ", error);
+      console.error("Error al eliminar mascota:", error.response || error);
+      const errorMessage = error.response?.data?.mensaje || 'Hubo un problema al eliminar la mascota.';
+      Alert.alert('Error', errorMessage);
     }
     handleModalClose();
   };
@@ -163,6 +187,11 @@ const ListsPetsA = () => {
   const handleEstadoChipPress = (estado) => {
     setSelectedTitle(estado);
     setEstadoModalVisible(true); // Muestra el EstadoModal
+  };
+
+  const handleEstadoModalSelect = (estadoSeleccionado) => {
+    setSelectedStatus(estadoSeleccionado);
+    setEstadoModalVisible(false);
   };
 
   const renderPetCard = ({ item }) => (
@@ -207,45 +236,45 @@ const ListsPetsA = () => {
 
         {/* Sección de botones de acción */}
         <View style={styles.buttonContainer}>
-  {item.estado !== 'Adoptado' && item.estado !== 'Reservado' && (
-    <TouchableOpacity
-      onPress={() => {
-        setSelectedPet(item);
-        setMode('update');
-        setModalVisible(true);
-      }}
-      style={styles.actionButtonEdit}
-    >
-      <Text style={styles.buttonText}>Actualizar</Text>
-    </TouchableOpacity>
-  )}
+          {item.estado !== 'Adoptado' && item.estado !== 'Reservado' && (
+            <TouchableOpacity
+              onPress={() => {
+                setSelectedPet(item);
+                setMode('update');
+                setModalVisible(true);
+              }}
+              style={styles.actionButtonEdit}
+            >
+              <Text style={styles.buttonText}>Actualizar</Text>
+            </TouchableOpacity>
+          )}
 
-  <TouchableOpacity
-    onPress={() => {
-      Alert.alert(
-        'Confirmación',
-        '¿Estás seguro de que deseas eliminar esta mascota?',
-        [
-          { text: 'Cancelar', style: 'cancel' },
-          { text: 'Eliminar', onPress: () => handleDeletePet(item.id_mascota) },
-        ]
-      );
-    }}
-    style={styles.actionButtonDelete}
-  >
-    <Text style={styles.buttonText}>Eliminar</Text>
-  </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              Alert.alert(
+                'Confirmación',
+                '¿Estás seguro de que deseas eliminar esta mascota?',
+                [
+                  { text: 'Cancelar', style: 'cancel' },
+                  { text: 'Eliminar', onPress: () => handleDeletePet(item.id_mascota) },
+                ]
+              );
+            }}
+            style={styles.actionButtonDelete}
+          >
+            <Text style={styles.buttonText}>Eliminar</Text>
+          </TouchableOpacity>
 
-  <TouchableOpacity
-    onPress={() => { 
-      setSelectedPet(item); 
-      setModalVisiblePet(true); 
-    }}
-    style={styles.actionButtonView}
-  >
-    <Text style={styles.buttonText}>Ver</Text>
-  </TouchableOpacity>
-</View>
+          <TouchableOpacity
+            onPress={() => { 
+              setSelectedPet(item); 
+              setModalVisiblePet(true); 
+            }}
+            style={styles.actionButtonView}
+          >
+            <Text style={styles.buttonText}>Ver</Text>
+          </TouchableOpacity>
+        </View>
 
       </View>
       <ListPet visible={modalVisiblePet} onClose={handleModalClose} pet={selectedPet} />
@@ -255,6 +284,16 @@ const ListsPetsA = () => {
   return (
     <View style={styles.container}>
       <Header title="Lista de mascotas" />
+
+      {/* Modal para Estado al iniciar */}
+      <EstadoModal
+        isVisible={estadoModalVisible}
+        onClose={() => setEstadoModalVisible(false)}
+        onSelect={handleEstadoModalSelect} // Nueva prop para manejar la selección
+        title="Selecciona el estado de las mascotas"
+        options={statusOptions} // Asumiendo que EstadoModal puede recibir opciones
+      />
+
       <TextInput
         style={styles.searchInput}
         placeholder="Buscar..."
@@ -276,23 +315,23 @@ const ListsPetsA = () => {
           </TouchableOpacity>
         ))}
         <View style={styles.buttonRow}>
-  <TouchableOpacity
-    style={styles.registerButton}
-    onPress={() => {
-      setMode('create');
-      setModalVisible(true);
-    }}
-  >
-    <Text style={styles.registerButtonText}>Registrar Mascota</Text>
-  </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.registerButton}
+            onPress={() => {
+              setMode('create');
+              setModalVisible(true);
+            }}
+          >
+            <Text style={styles.registerButtonText}>Registrar Mascota</Text>
+          </TouchableOpacity>
 
-  <TouchableOpacity
-    style={styles.buttonV}
-    onPress={() => setModalVacunaVisible(true)}
-  >
-    <Text style={styles.registerButtonText}>Registrar Vacuna</Text>
-  </TouchableOpacity>
-</View>
+          <TouchableOpacity
+            style={styles.buttonV}
+            onPress={() => setModalVacunaVisible(true)}
+          >
+            <Text style={styles.registerButtonText}>Registrar Vacuna</Text>
+          </TouchableOpacity>
+        </View>
       </View>
       {isLoading ? (
         <ActivityIndicator size="large" color="#0000ff" />
@@ -354,13 +393,6 @@ const ListsPetsA = () => {
           </View>
         </View>
       </Modal>
-
-      {/* Modal para Estado */}
-      <EstadoModal
-        isVisible={estadoModalVisible}
-        onClose={() => setEstadoModalVisible(false)}
-        title={selectedTitle}
-      />
     </View>
   );
 };
@@ -425,7 +457,7 @@ const styles = StyleSheet.create({
   },
   row: {
     flex: 1,
-    justifyContent: 'space-between', // Espacio entre tarjetas
+    justifyContent: 'space-between',
     marginBottom: 12,
   },
   cardContainer: {
@@ -439,7 +471,7 @@ const styles = StyleSheet.create({
     elevation: 1,
     flex: 1,
     margin: 4,
-    width: 175, // Asegúrate de que el ancho de las tarjetas permita dos columnas
+    width: 175,
   },
   title: {
     fontSize: 16,
@@ -465,7 +497,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: 80, // Ajusta la altura según sea necesario
+    height: 80,
     borderRadius: 10,
     marginTop: 8,
   },
@@ -481,32 +513,32 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   buttonContainer: {
-    flexDirection: 'column', // Cambiar a columna para apilar los botones verticalmente
+    flexDirection: 'column',
     justifyContent: 'space-between',
-    marginTop: 12, // Espacio entre la descripción y los botones
+    marginTop: 12,
   },
   actionButtonEdit: {
     backgroundColor: 'black',
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 4,
-    marginBottom: 8, // Espacio entre botones
-    width: '100%', // Ancho completo del contenedor
+    marginBottom: 8,
+    width: '100%',
   },
   actionButtonDelete: {
     backgroundColor: 'red',
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 4,
-    marginBottom: 8, // Espacio entre botones
-    width: '100%', // Ancho completo del contenedor
+    marginBottom: 8,
+    width: '100%',
   },
   actionButtonView: {
     backgroundColor: 'black',
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 4,
-    width: '100%', // Ancho completo del contenedor
+    width: '100%',
   },
   buttonText: {
     color: '#fff',
@@ -525,7 +557,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   imageWrapper: {
-    flexBasis: '48%', // Ajusta el tamaño según sea necesario 
+    flexBasis: '48%',
     marginBottom: 8,
   },
   modalContainer: {
@@ -568,8 +600,8 @@ const styles = StyleSheet.create({
   },
   buttonRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between', // Para agregar espacio entre los botones
-    marginVertical: 12, // Margen vertical para darle un poco de espacio
+    justifyContent: 'space-between',
+    marginVertical: 12,
   },
 });
 

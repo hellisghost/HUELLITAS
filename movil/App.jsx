@@ -11,10 +11,6 @@ import LoginPets from './src/components/screens/LoginPets';
 import GlobalProvider from './src/context/GlobalContext';
 import FormUser from './src/components/screens/FormUser.jsx';
 import UpdateProfile from './src/components/screens/UpdateProfile';
-// import SolicitarRecuperacion from './src/components/screens/SolicitarRecuperacion.jsx';
-// import RestablecerContraseña from './src/components/screens/RestablecerContrasena.jsx';
-// import Header from './src/components/organismos/Header.jsx';
-
 /* Usuario */
 import ListsPetsU from './src/components/screens/ListsPets';
 import UserProfile from './src/components/screens/UserProfile';
@@ -49,7 +45,7 @@ const UserTabs = () => {
             <MaterialIcons name="developer-board" size={25} color={color} />
           ),
           tabBarLabel: 'Lista mascotas',
-          tabBarColor: '#694fad',
+          tabBarColor: 'black',
         }}
       />
       <Tab.Screen
@@ -60,7 +56,7 @@ const UserTabs = () => {
             <MaterialIcons name="pets" size={25} color={color} />
           ),
           tabBarLabel: 'Mis solicitudes de adopcion',
-          tabBarColor: '#694fad',
+          tabBarColor: 'black',
         }}
       />
       <Tab.Screen
@@ -71,7 +67,7 @@ const UserTabs = () => {
             <MaterialIcons name="pets" size={25} color={color} />
           ),
           tabBarLabel: 'Mis adopciones',
-          tabBarColor: '#694fad',
+          tabBarColor: 'black',
         }}
       />
       <Tab.Screen
@@ -82,7 +78,7 @@ const UserTabs = () => {
             <FontAwesome name="user-circle" size={25} color={color} />
           ),
           tabBarLabel: 'Perfil',
-          tabBarColor: '#40c340',
+          tabBarColor: 'black',
         }}
       />
     </Tab.Navigator>
@@ -108,7 +104,7 @@ const InvitTabs = () => {
             <MaterialIcons name="developer-board" size={25} color={color} />
           ),
           tabBarLabel: 'Lista mascotas',
-          tabBarColor: '#694fad',
+          tabBarColor: 'black',
         }}
       />
     </Tab.Navigator>
@@ -134,7 +130,7 @@ const AdminTabs = () => {
               <FontAwesome name="list-alt" size={25} color={color} />
             ),
             tabBarLabel: 'Lista de Mascotas',
-            tabBarColor: '#694fad',
+            tabBarColor: 'black',
           }}
         />
         <Tab.Screen
@@ -145,7 +141,7 @@ const AdminTabs = () => {
               <FontAwesome name="user-circle" size={25} color={color} />
             ),
             tabBarLabel: 'Perfil',
-            tabBarColor: '#40c340',
+            tabBarColor: 'black',
           }}
         />
       </Tab.Navigator>
@@ -173,7 +169,7 @@ const SuperTabs = () => {
               <FontAwesome name="list-alt" size={25} color={color} />
             ),
             tabBarLabel: 'Lista de Mascotas',
-            tabBarColor: '#694fad',
+            tabBarColor: 'black',
           }}
         />
         <Tab.Screen
@@ -184,7 +180,7 @@ const SuperTabs = () => {
               <FontAwesome name="list-alt" size={25} color={color} />
             ),
             tabBarLabel: 'Solicitudes mascotas',
-            tabBarColor: '#694fad',
+            tabBarColor: 'black',
           }}
         />
         <Tab.Screen
@@ -195,7 +191,7 @@ const SuperTabs = () => {
               <FontAwesome name="user-circle" size={25} color={color} />
             ),
             tabBarLabel: 'Perfil',
-            tabBarColor: '#40c340',
+            tabBarColor: 'black',
           }}
         />
       </Tab.Navigator>
@@ -262,17 +258,6 @@ const App = () => {
           component={FormUser}
           options={{ headerShown: false }}
         />
-        {/* <Stack.Screen
-          name="solicitar_recuperacion"
-          component={SolicitarRecuperacion}
-          options={{ header: () => <Header title="Recuperación de contraseña" /> }}
-        />
-
-        <Stack.Screen
-          name="restablecer_contrasena"
-          component={RestablecerContraseña}
-          options={{ header: () => <Header title="Restablecer Contraseña" /> }}
-        /> */}
 
 
       </Stack.Navigator>
