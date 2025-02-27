@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-09-2024 a las 03:20:31
+-- Tiempo de generación: 25-10-2024 a las 16:12:16
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -42,8 +42,9 @@ CREATE TABLE `adopciones` (
 --
 
 INSERT INTO `adopciones` (`id_adopcion`, `fk_id_mascota`, `fk_id_usuario_adoptante`, `fecha_adopcion_proceso`, `fecha_adopcion_aceptada`, `estado`, `estado_anterior`) VALUES
-(51, 7, 5, '2024-08-31', '2024-08-31', 'aceptada', 'En Adopcion'),
-(54, 13, 5, '2024-08-31', NULL, 'proceso de adopcion', 'Urgente');
+(2, 3, 19, '2024-10-05', '2024-10-05', 'aceptada', 'Urgente'),
+(3, 2, 17, '2024-10-07', NULL, 'proceso de adopcion', 'En Adopcion'),
+(4, 4, 17, '2024-10-08', '2024-10-08', 'aceptada', 'En Adopcion');
 
 -- --------------------------------------------------------
 
@@ -62,7 +63,10 @@ CREATE TABLE `categorias` (
 --
 
 INSERT INTO `categorias` (`id_categoria`, `nombre_categoria`, `estado`) VALUES
-(4, 'esteban full', 'activa');
+(2, 'perro', 'activa'),
+(3, 'gato', 'activa'),
+(4, 'conejo', 'activa'),
+(5, 'chivo', 'activa');
 
 -- --------------------------------------------------------
 
@@ -81,10 +85,11 @@ CREATE TABLE `departamentos` (
 --
 
 INSERT INTO `departamentos` (`id_departamento`, `nombre_departamento`, `codigo_dane`) VALUES
-(1, 'Huilaq', '12345'),
-(3, 'Bogota', '1234501'),
-(4, 'qweqsd', '123'),
-(7, 'wadascas', '23124322');
+(4, 'Antioquia', '05001'),
+(5, 'Boyaca', '15001'),
+(6, 'Caldas', '12345'),
+(7, 'cundinamarca', '32345'),
+(8, 'huila', '43231');
 
 -- --------------------------------------------------------
 
@@ -104,20 +109,16 @@ CREATE TABLE `imagenes` (
 --
 
 INSERT INTO `imagenes` (`id_imagen`, `fk_id_mascota`, `ruta_imagen`, `fecha_registro`) VALUES
-(87, 7, 'imagenes-1724985519642-178738400.jpg', '2024-08-30 02:38:39'),
-(88, 7, 'imagenes-1724985519644-916967833.jpg', '2024-08-30 02:38:39'),
-(89, 7, 'imagenes-1724985519651-590040244.png', '2024-08-30 02:38:39'),
-(90, 7, 'imagenes-1724985519653-190022385.png', '2024-08-30 02:38:39'),
-(91, 12, 'imagenes-1724985752832-562450668.jpg', '2024-08-30 02:42:32'),
-(92, 12, 'imagenes-1724985752834-66846134.jpg', '2024-08-30 02:42:32'),
-(93, 12, 'imagenes-1724985752837-261804207.png', '2024-08-30 02:42:32'),
-(94, 12, 'imagenes-1724985752837-400331760.png', '2024-08-30 02:42:32'),
-(95, 13, 'imagenes-1724985761177-227396980.jpg', '2024-08-30 02:42:41'),
-(96, 13, 'imagenes-1724985761180-87317263.jpg', '2024-08-30 02:42:41'),
-(97, 14, 'imagenes-1724985767126-315329133.jpg', '2024-08-30 02:42:47'),
-(98, 14, 'imagenes-1724985767129-59169565.jpg', '2024-08-30 02:42:47'),
-(99, 14, 'imagenes-1724985767132-291414032.png', '2024-08-30 02:42:47'),
-(100, 15, 'imagenes-1724985772578-166364722.jpg', '2024-08-30 02:42:52');
+(2, 2, 'imagenes-1728090459614-517461891.jpg', '2024-10-05 01:07:39'),
+(3, 2, 'imagenes-1728090459614-369811245.jpg', '2024-10-05 01:07:39'),
+(4, 3, 'imagenes-1728097715996-802683672.jpg', '2024-10-05 03:08:36'),
+(5, 3, 'imagenes-1728097715998-755799346.jpg', '2024-10-05 03:08:36'),
+(6, 3, 'imagenes-1728097716000-815901771.jpg', '2024-10-05 03:08:36'),
+(7, 3, 'imagenes-1728097715998-57417632.jpg', '2024-10-05 03:08:36'),
+(8, 4, 'imagenes-1728110525604-18815204.jpg', '2024-10-05 06:42:05'),
+(9, 4, 'imagenes-1728110525606-54849439.jpg', '2024-10-05 06:42:05'),
+(10, 5, 'imagenes-1728420029537-961268792.jpg', '2024-10-08 20:40:29'),
+(11, 5, 'imagenes-1728420029536-285753230.jpg', '2024-10-08 20:40:29');
 
 -- --------------------------------------------------------
 
@@ -146,11 +147,10 @@ CREATE TABLE `mascotas` (
 --
 
 INSERT INTO `mascotas` (`id_mascota`, `nombre_mascota`, `fecha_nacimiento`, `estado`, `descripcion`, `esterilizado`, `tamano`, `peso`, `fk_id_categoria`, `fk_id_raza`, `fk_id_departamento`, `fk_id_municipio`, `sexo`) VALUES
-(7, 'pepe', '2222-11-12', 'Adoptado', 'lulu feliz', 'si', 'Pequeno', 4.00, 4, 3, 1, 1, 'Macho'),
-(12, 'mascota con  cuatro imagenes', '2024-03-22', 'En Adopcion', 'Mascota registarda desde el backend con imagen, y si funciona', 'si', 'Mediano', 3.00, 4, 3, 1, 1, 'Hembra'),
-(13, 'mascota con  cuatro imagenes', '2024-03-22', 'Reservado', 'Mascota registarda desde el backend con imagen, y si funciona', 'si', 'Mediano', 3.00, 4, 3, 1, 1, 'Hembra'),
-(14, 'mascota con  cuatro imagenes', '2024-03-22', 'Urgente', 'Mascota registarda desde el backend con imagen, y si funciona', 'si', 'Mediano', 3.00, 4, 3, 1, 1, 'Hembra'),
-(15, 'mascota con  cuatro imagenes', '2024-03-22', 'Urgente', 'Mascota registarda desde el backend con imagen, y si funciona', 'si', 'Mediano', 3.00, 4, 3, 1, 1, 'Hembra');
+(2, 'pepe', '2023-03-09', 'Reservado', 'es muy imperactivo, cariñozo, delicado con los niños', 'si', 'Grande', 68.00, NULL, 4, NULL, 9, 'Macho'),
+(3, 'natacha', '2024-06-19', 'Adoptado', 'cariñosa, obediente, inteligente, linda, aseada, cuida de los niños', 'no', 'Mediano', 50.00, NULL, 3, NULL, 9, 'Hembra'),
+(4, 'quiti', '2024-04-09', 'Adoptado', 'tierna, limpia y no es callejera', 'si', 'Pequeno', 20.00, NULL, 5, NULL, 3, 'Hembra'),
+(5, 'gemelos ', '2024-10-02', 'En Adopcion', 'otra cosas hay', 'si', 'Intermedio', 60.00, 2, 4, 6, 7, 'Macho');
 
 -- --------------------------------------------------------
 
@@ -170,10 +170,15 @@ CREATE TABLE `municipios` (
 --
 
 INSERT INTO `municipios` (`id_municipio`, `nombre_municipio`, `codigo_dane`, `fk_id_departamento`) VALUES
-(1, 'Isnosq', '5432101', 1),
-(3, 'Pitalito', '123450', 1),
-(4, 'Mocoa', '122542', 1),
-(5, 'qwe', '123123', 1);
+(2, 'andes', '05034', 4),
+(3, 'barbosa', '05079', 4),
+(4, 'tunja', '15002', 5),
+(5, 'belen', '15087', 5),
+(6, 'manizales', '17001', 6),
+(7, 'la dorada', '17380', 6),
+(8, 'cabrera', '25120', 7),
+(9, 'pitalito', '41551', 8),
+(10, 'gigante', '41306', 8);
 
 -- --------------------------------------------------------
 
@@ -195,8 +200,23 @@ CREATE TABLE `notificaciones` (
 --
 
 INSERT INTO `notificaciones` (`id_notificacion`, `id_usuario`, `mensaje`, `leido`, `fecha`, `estado`) VALUES
-(2, 7, 'El usuario 9 ha solicitado cambiar su rol de usuario a undefined', 0, '2024-08-24 18:57:36', ''),
-(5, 9, 'El Super Usuario Jose ha aceptado tu solicitud de cambio de rol. Para continuar con el cambio de rol, debes comunicarte al WhatsApp 3188690317 de Jose para confirmar el cambio.', 0, '2024-08-24 20:32:58', 'pendiente');
+(4, 17, 'Tu solicitud de cambio de rol fue denegada por el Super Usuario Jose.', 0, '2024-10-05 00:06:32', 'pendiente'),
+(6, 19, 'El Super Usuario Jose ha aceptado tu solicitud de cambio de rol. Para continuar con el cambio de rol, debes comunicarte al WhatsApp 3188690317 de Jose para confirmar el cambio.', 0, '2024-10-05 06:49:35', 'pendiente'),
+(8, 19, 'Tu solicitud de cambio de rol fue denegada por el Super Usuario kevin fernando.', 0, '2024-10-11 05:19:21', 'pendiente'),
+(9, 23, 'El Super Usuario kevin fernando ha aceptado tu solicitud de cambio de rol. Para continuar con el cambio de rol, debes comunicarte al WhatsApp 3142124303 de kevin fernando para confirmar el cambio.', 0, '2024-10-11 05:19:28', 'pendiente');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `password_resets`
+--
+
+CREATE TABLE `password_resets` (
+  `id` int(11) NOT NULL,
+  `correo` varchar(50) NOT NULL,
+  `token` varchar(255) NOT NULL,
+  `expires_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -215,11 +235,16 @@ CREATE TABLE `razas` (
 --
 
 INSERT INTO `razas` (`id_raza`, `nombre_raza`, `fk_id_categoria`) VALUES
-(3, 'raza web actualizada', 4),
-(4, 'nueva', 4),
-(5, 'qwe', 4),
-(9, 'dario full', 4),
-(10, 'qweloco', 4);
+(2, 'pitbull', 2),
+(3, 'chao chao', 2),
+(4, 'pastor aleman', 2),
+(5, 'angora', 3),
+(6, 'egipcio', 3),
+(7, 'siames', 3),
+(8, 'mini lop', 4),
+(9, 'holandez', 4),
+(10, 'boer', 5),
+(11, 'damasco', 5);
 
 -- --------------------------------------------------------
 
@@ -246,13 +271,12 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id_usuario`, `nombre`, `apellido`, `direccion`, `telefono`, `correo`, `tipo_documento`, `documento_identidad`, `password`, `img`, `rol`) VALUES
-(5, 'Dario', 'Zamora', 'loco', '3158716879', 'dajo59416@gmail.com', 'cedula', '55065264', '$2b$10$eKsLg1yJd2QLuRomNG8PrOF7QLXFv1L7qoTjjp7oif8WqJ5g.879K', 'img-1723496583726-780509290.png', 'usuario'),
-(7, 'Jose', 'Vargas', 'loco', '3188690317', 'dajozavargas@gmail.com', 'cedula', '1077848366', '$2b$10$rvI0wYQLni8k4qZC6DCJ2emaQhcNk8fIsBtW8dgUGpKjk7RfdvAT2', 'img-1724804730945-519039254.jpeg', 'superusuario'),
-(8, 'qwe', 'qwe', 'locoq', '1231', 'qwe@gmail.com', 'cedula', '123123', '$2b$10$CfnIn.Z.LlH3cV9kd1Fh1eYnMgHyho/aqKNnlSRNUQSH1L54eCvRO', 'img-1724116616335-283913486.png', 'administrador'),
-(9, 'zorro lololololo', 'zorro', 'loco', '124675846356345', 'zorro@gmail.com', 'tarjeta de extranjeria', '23465678674', '$2b$10$HlLlBPkg7IdbgpGHw0FmfeLSpGjo4Twi6OlsxAeJX5Kv2/ptQ10.W', 'img-1723513152450-8202856.jpeg', 'usuario'),
-(10, 'lolo', 'loloq', 'lolo@gmail.com', '12353648456', 'lolo@gmail.com', 'cedula', '1341489713', '$2b$10$eVKK0f7TMD4HtqHB7EcAX.gT/p87gEVcwDS/zoLvPUBNQ3fChIXNu', 'img-1723687878413-330559835.png', 'usuario'),
-(11, 'qwe', 'qwe', 'qwe', '213234364564', 'jose@gmail.com', 'tarjeta', '2342353523', '$2b$10$mF./B2PwzkKI6QD5P5GMce55KyMcwW9/X0kdOZqR5vXiuybWQ8VDu', 'img-1724113918049-554800424.jpeg', 'usuario'),
-(12, ' asd asd', 'qwe', ' dvdvv sdvw ', '213123123', 'da@gmail.com', 'cedula', '1231231243', '$2b$10$tsk6gvgMSm4YQjKtWsngueOju/MKfnrt/vViFvIF.5riaosUihu3C', 'img-1725147425412-617538646.png', 'usuario');
+(1, 'kevin fernando', 'mahecha', 'pitalito', '3142124303', 'mahecha@gmail.com', 'cedula', '1077848366', '$2b$10$m6ok7JSX2JU4LCZNSKyxfeFBv/3YrIp3IO1nwW4rB3LCpxliYvXWO', 'img-1728086267356-294040990.jpg', 'superusuario'),
+(17, 'kevin fernando', 'andrade mahecha', 'calle 1b #20-70', '3142124302', 'andrade@gmail.com', 'cedula', '1083864350', '$2b$10$qpbzPM6IGJaTxIFNjeRSf.2To0Rz148UEWhObqAod8bEAJo1eK2ei', 'img-1728624264432-315823060.jpg', 'usuario'),
+(18, 'kevin', 'andrade', 'calle 23 barrio sur', '1234456634', 'kevin@gmail.com', 'cedula', '12345678', '$2b$10$u67mpyyubrD7Y/GcLCplh.y12/p9XF99GTto/LbxYIJ50rlpA5/s2', 'img-1728086130235-228447344.jpg', 'administrador'),
+(19, 'julian', 'valdez', 'bruselas', '1234213242', 'julian@gmail.com', 'cedula', '123232453', '$2b$10$9HJzuxtDSDJNHqQZy5ggZuDDevxIwVkVjtcbYIsGakeXpLnWJWN3u', NULL, 'usuario'),
+(20, 'kevin mamalon', 'epicardo', 'que te importa', '3122344321', 'melo@gmail.com', '', '1083864351', '$2b$10$DN.WyyP8IjnSsf/aJGKwt.s2IM9oErkeMBFeXwlMaWqF9y9WuTmcG', NULL, 'usuario'),
+(23, 'cacaito', 'betancour cocoma', 'san francisco', '3123131231', 'cacaito@gmail.com', 'cedula', '1031161875', '$2b$10$E23RJcyTmlVx61fuUSm9u.fXm/DEDN3Hg/xiZRuOY.TVcutwb6h76', 'img-1728623501382-281081079.jpg', 'usuario');
 
 -- --------------------------------------------------------
 
@@ -273,7 +297,9 @@ CREATE TABLE `vacunas` (
 --
 
 INSERT INTO `vacunas` (`id_vacuna`, `fk_id_mascota`, `fecha_vacuna`, `enfermedad`, `estado`) VALUES
-(4, 7, '2024-08-08', 'loco', 'Completa');
+(1, 3, '2024-10-01', 'pardo rojo', 'Completa'),
+(2, 2, '2024-08-06', 'pardo rojo', 'Completa'),
+(3, 3, '2024-06-11', 'moquillo', 'En proceso');
 
 --
 -- Índices para tablas volcadas
@@ -333,6 +359,13 @@ ALTER TABLE `notificaciones`
   ADD KEY `id_usuario` (`id_usuario`);
 
 --
+-- Indices de la tabla `password_resets`
+--
+ALTER TABLE `password_resets`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `correo` (`correo`);
+
+--
 -- Indices de la tabla `razas`
 --
 ALTER TABLE `razas`
@@ -362,61 +395,67 @@ ALTER TABLE `vacunas`
 -- AUTO_INCREMENT de la tabla `adopciones`
 --
 ALTER TABLE `adopciones`
-  MODIFY `id_adopcion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `id_adopcion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `departamentos`
 --
 ALTER TABLE `departamentos`
-  MODIFY `id_departamento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_departamento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `imagenes`
 --
 ALTER TABLE `imagenes`
-  MODIFY `id_imagen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
+  MODIFY `id_imagen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `mascotas`
 --
 ALTER TABLE `mascotas`
-  MODIFY `id_mascota` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id_mascota` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `municipios`
 --
 ALTER TABLE `municipios`
-  MODIFY `id_municipio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_municipio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `notificaciones`
 --
 ALTER TABLE `notificaciones`
-  MODIFY `id_notificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_notificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT de la tabla `password_resets`
+--
+ALTER TABLE `password_resets`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `razas`
 --
 ALTER TABLE `razas`
-  MODIFY `id_raza` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_raza` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT de la tabla `vacunas`
 --
 ALTER TABLE `vacunas`
-  MODIFY `id_vacuna` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_vacuna` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Restricciones para tablas volcadas
@@ -455,6 +494,12 @@ ALTER TABLE `municipios`
 --
 ALTER TABLE `notificaciones`
   ADD CONSTRAINT `notificaciones_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`);
+
+--
+-- Filtros para la tabla `password_resets`
+--
+ALTER TABLE `password_resets`
+  ADD CONSTRAINT `password_resets_ibfk_1` FOREIGN KEY (`correo`) REFERENCES `usuarios` (`correo`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `razas`

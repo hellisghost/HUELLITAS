@@ -285,7 +285,7 @@ export const eliminarMascota = async (req, res) => {
 	try {
 		const { id_mascota } = req.params;
 		const [result] = await pool.query(
-			"DELETE FROM Mascotas WHERE id_mascota=?",
+			"DELETE FROM mascotas WHERE id_mascota=?",
 			[id_mascota]
 		);
 		if (result.affectedRows > 0) {
